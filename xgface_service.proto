@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.xgrobotics.xgface";
+option java_outer_classname = "XgfaceProto";
+option objc_class_prefix = "XGF";
+
+package xgface;
+
+// Interface exported by the server.
+service XgfaceService{
+  // xgface RPC service
+  //
+  rpc GetFeature(Request) returns (Features) {}
+  rpc GetBox(Request) returns (Boxs) {}
+  rpc GetLandmark(Request) returns (Landmarks) {}
+  rpc GetDetectInfo(Request) returns (DetectInfo){}
+  rpc GetDetectInfo_mutli_images(Request) returns (DetectInfos){}
+}
+
+message Request {
+  repeated string images = 1;
+}
+
+message Point {
+  float coordinate_x = 1;
+  float coordinate_y = 2;
+}
+message Rect {
+  float width = 1;
+  float height = 2;
+}
+
+message Feature {
+  repeated float values = 1;
+}
+message Features {
+  repeated Feature features = 1;
+}
+
+message Box {
+  Point center = 1;
+  Rect  rect = 2;
+  float score = 3;
+}
+message Boxs{
+  repeated Box boxs = 1;
+}
+
+message Landmark {
+  repeated Point points = 1;
+  float score = 2;
+}
+message Landmarks {
+  repeated Landmark landmarks = 1;
+}
+
+message Face{
+    Box box = 1;
+    Landmark landmark = 2;
+    Feature feature = 3;
+	  map<string,int32> attributes = 4;	
+    float pitch = 5;
+    float yaw = 6;
+    float roll = 7;
+
+}
+message DetectInfo {
+  repeated Face faces = 1;
+}
+message DetectInfos {
+  repeated DetectInfo detectinfos = 1;
+}
+
