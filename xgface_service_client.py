@@ -10,11 +10,12 @@ import index_service_pb2_grpc
 import base64
 from array import array
 import re 
-import OS
+import os
 
 _HOST = '10.58.122.237'
 _PORT1 = '50000'
 _PORT2 = '50001'
+
 
 def convert_base64(path):
 	with open(path,'rb+') as f:
@@ -27,15 +28,16 @@ def DetectInfo(data):
 	stub = xgface_service_pb2_grpc.XgfaceServiceStub(channel)
 	response = stub.GetDetectInfo(xgface_service_pb2.Request(images=data))#.__str__()
 	#print(response)
-	if response:
-		box = response.faces[0].box
-		landmark = response.faces[0].landmark
-		feature = response.faces[0].feature
-		print(feature)
-		#box = re.findall(r'box(.*)landmark',response,re.S)[0].replace('\n','  ')
-		#landmark = re.findall(r'landmark(.*)feature',response,re.S)[0].replace('\n','  ')
-		#feature = re.findall(r'feature(.*)attributes',response,re.S)[0].split('attributes')[0].replace('\n','  ')
-		#print(feature)
+	if len(response.faces):
+		for i in range(len(response.faces)):
+			box[i] = response.faces[i].box
+			landmark[i] = response.faces[i].landmark
+			feature[i]= response.faces[i].feature
+			print(feature)
+			#box = re.findall(r'box(.*)landmark',response,re.S)[0].replace('\n','  ')
+			#landmark = re.findall(r'landmark(.*)feature',response,re.S)[0].replace('\n','  ')
+			#feature = re.findall(r'feature(.*)attributes',response,re.S)[0].split('attributes')[0].replace('\n','  ')
+			#print(feature)
 		return box,landmark,feature
 	else:
 		print('不存在人脸')
@@ -51,15 +53,28 @@ def GetFaceID(feature):
 	stub = index_service_pb2_grpc.IndexServiceStub(channel)
 	response = stub.InsertPoint(index_service_pb2.Feature(value=featurelist))
 	print(response)
+
 	return response
 
 
 if __name__ == '__main__':
-	path  = "/Users/junjieluo/test/xgface_test/1.jpg"
-	data = convert_base64(path)
+	path  = "/Users/junjieluo/MyGit/xgface/photos"
+	filename = '1.jpg'
+	data = convert_base64(path+'/'+filename)
 	alist = DetectInfo(data)
 	if alist:
 		box = alist[0]
 		landmark = alist[1]
 		feature = alist[2]
 		ID = GetFaceID(alist[2])
+		with open('1.txt','a+') as f:
+			f.write(filename+' ')
+			f.write(str(ID)+' ')
+			f.write(str(landmark)+' ')
+			f.write(str(feature)+' ')
+
+
+
+
+
+
