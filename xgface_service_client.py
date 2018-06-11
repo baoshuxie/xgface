@@ -13,7 +13,7 @@ import os
 
 
 
-_HOST = '10.58.122.237'
+_HOST = 'xxx.xxx.xxx.xxx'
 _PORT1 = '50000'		#xgface_service端口,使用 detectinfo 方法输入一个base64数组返回box,landmark,feature,attributes,pitch,yaw,roll
 _PORT2 = '50001'		#index_service端口,使用 insertpoint 方法输入 feature 返回一个id
 
